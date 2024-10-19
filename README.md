@@ -40,3 +40,7 @@ If you encounter issues:
 - Ensure you're in the correct directory
 - For help, create an issue on GitHub
 
+## License
+This project is licensed under the Apache NON-AI License, Version 2.0 - see the [LICENSE](LICENSE.txt) file for details
+
+
