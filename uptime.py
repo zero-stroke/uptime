@@ -7,8 +7,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import sys
 
-from Utils.string_formatting import format_seconds
-
 sys.stdout.reconfigure(encoding='utf-8')
 
 
@@ -76,8 +74,9 @@ def main() -> None:
     timeout_limit = 4.8
     outage_start = 0.0
     outages: list[Outage] = []
+    start_time = 0.0
 
-    print(" " * 5 + "Monitoring internet uptime by pinging DNS servers:\n" + "-" * 60 + "\n")
+    print(" " * 5 + "\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * 60 + "\n")
     print(" " * 22 + "Quad9            Cloudflare       Google")
     script_start = time.time()
 
@@ -108,7 +107,7 @@ def main() -> None:
                     ping_result_output.append("❌".ljust(ljust_num))
 
             if all_failed:
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌❌❌❌❌❌❌❌❌ Internet Outage ❌❌❌❌❌❌❌❌❌ ")
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌❌❌❌❌❌❌ Internet Outage ❌❌❌❌❌❌❌ ")
                 if not outage_start:
                     outage_start = time.time()
             else:
@@ -128,6 +127,8 @@ def main() -> None:
                 calulate_stats(all_hosts)
                 if outages:
                     print_outage_info(outages)
+                elif start_time:
+                    print(f"\nOngoing outage since {start_time}")
                 else:
                     print("\nNo outages")
                 print("\n                      Quad9            Cloudflare       Google")
@@ -187,6 +188,19 @@ def print_formatted_stats(stats: list[list], column_names: list) -> None:
     # Print stats
     for stat in stats:
         print(" | ".join(str(item).ljust(width) for item, width in zip(stat, col_widths)))
+
+
+def format_seconds(seconds_time: float) -> str:
+    total_time_minutes: float = seconds_time / 60
+    total_time_message: str = f"{seconds_time:.2f}s ({total_time_minutes:.2f} minutes)"
+    if total_time_minutes > 60:
+        total_time_hours: float = total_time_minutes / 60
+        total_time_message += f" ({total_time_hours:.2f} hours)"
+        if total_time_hours > 24:
+            total_time_days: float = total_time_hours / 24
+            total_time_message += f" ({total_time_days:.2f} days)"
+
+    return total_time_message
 
 
 if __name__ == '__main__':
