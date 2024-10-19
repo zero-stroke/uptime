@@ -68,7 +68,7 @@ def main() -> None:
     all_hosts: list[Host] = [Host(address=host_ip) for host_ip in all_host_ips]
 
     ping_interval_seconds = 3
-    info_print_interval_seconds = 40
+    info_print_interval_seconds = 5
     ljust_num = 12
     num_outages = 0
     timeout_limit = 4.8
@@ -127,8 +127,8 @@ def main() -> None:
                 calulate_stats(all_hosts)
                 if outages:
                     print_outage_info(outages)
-                elif start_time:
-                    print(f"\nOngoing outage since {start_time}")
+                # elif start_time:
+                #     print(f"\nOngoing outage since {start_time}")
                 else:
                     print("\nNo outages")
                 print("\n                      Quad9            Cloudflare       Google")
