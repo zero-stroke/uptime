@@ -26,8 +26,12 @@ git clone https://github.com/zero-stroke/uptime.git
 ## Running the Script
 
 1. Open your terminal/command prompt
-2. Navigate to script location: `cd path/to/script`
-3. Run: `python uptime.py`
+2. Navigate to script location: `cd path/to/script`. For example, `cd C:/Users/you/Downloads/uptime/`
+
+3. Run: 
+```shell
+python uptime.py
+```
 
 ## Support
 
