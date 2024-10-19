@@ -1,6 +1,5 @@
 """
 Can be run for days to see how often the internet is up.
-Contact me if you want de-obfuscated code.
 """
 import subprocess
 import time
