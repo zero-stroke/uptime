@@ -1,6 +1,6 @@
 # uptime.py
 
-A Python script to check internet uptime.
+A Python script to check internet uptime by pinging DNS servers.
 
 ## Prerequisites
 
