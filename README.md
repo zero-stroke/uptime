@@ -6,12 +6,18 @@ A Python script to check internet uptime.
 
 1. **Python**: Make sure Python is installed on your computer, version 3.10 or up
    - Download from: https://www.python.org/downloads/
-   - Verify installation: `python --version` or `python3 --version`
+   - Verify installation: 
+```shell 
+python --version
+``` 
 
 2. **Git** (Optional - Choose one method below):
    - **With Git:**
      - Install Git from: https://git-scm.com/downloads
-     - Clone: `git clone https://github.com/zero-stroke/uptime.git`
+     - Clone: 
+```bash 
+git clone https://github.com/zero-stroke/uptime.git
+```
    - **Without Git:**
      - Click the green "Code" button on GitHub
      - Select "Download ZIP"
@@ -21,7 +27,7 @@ A Python script to check internet uptime.
 
 1. Open your terminal/command prompt
 2. Navigate to script location: `cd path/to/script`
-3. Run: `python uptime.py` or `python3 uptime.py`
+3. Run: `python uptime.py`
 
 ## Support
 
