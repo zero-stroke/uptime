@@ -11,7 +11,7 @@ A Python script to check internet uptime.
 2. **Git** (Optional - Choose one method below):
    - **With Git:**
      - Install Git from: https://git-scm.com/downloads
-     - Clone: `git clone [repository-url]`
+     - Clone: `git clone https://github.com/zero-stroke/uptime.git`
    - **Without Git:**
      - Click the green "Code" button on GitHub
      - Select "Download ZIP"
