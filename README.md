@@ -4,7 +4,7 @@ A Python script to check internet uptime.
 
 ## Prerequisites
 
-1. **Python**: Make sure Python is installed on your computer
+1. **Python**: Make sure Python is installed on your computer, version 3.10 or up
    - Download from: https://www.python.org/downloads/
    - Verify installation: `python --version` or `python3 --version`
 
