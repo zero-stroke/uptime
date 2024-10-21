@@ -1,2 +1,3 @@
-/dist
-/built
+/dist/**
+/built/**
+/build/**
