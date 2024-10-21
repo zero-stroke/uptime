@@ -4,7 +4,7 @@ A Python script to check internet uptime by pinging DNS servers.
 
 ## Prerequisites
 
-For running with python, follow the below steps. Otherwise, I've also compiled it into an exe that you can point and click to run, so that is an alternative as well. 
+For running with python, follow the below steps. Otherwise, I've also compiled it into an exe that you can point and click to run, so that is an alternative as well, though it might not be as consistent as the .py script. This has been tested to work on windows 10, 11, and Ubuntu. 
 
 1. **Python**: Make sure Python is installed on your computer, version 3.10 or up
    - Download from: https://www.python.org/downloads/ make sure to check the box that says to add it to your "PATH".
@@ -109,12 +109,17 @@ Start               | End                 | Duration
 2024-10-19 16:33:24 | 2024-10-19 16:34:27 | 63.17s (1.05 minutes)
 ```
 
+Note that if using Windows 10 or below, the emojis are replaced by [✓] and [X].
+
+
+
 ## Support
 
 If you encounter issues:
 - Check Python is installed correctly
 - Ensure you're in the correct directory
 - For help, create an issue on GitHub
+
 
 ## License
 This project is licensed under the Apache NON-AI License, Version 2.0 - see the [LICENSE](LICENSE.txt) file for details
