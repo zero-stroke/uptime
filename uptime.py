@@ -20,8 +20,10 @@ try:
 except (IndexError, ValueError):
     is_win_11 = False
 
-if is_win_11:
-    print("Windows 11 detected")
+os_is_windows = platform.system() == 'Windows'
+
+if is_win_11 or not os_is_windows:
+    # print("Windows 11 or Linux detected")
     checkmark = '✅'
     x = '❌'
 else:
@@ -29,7 +31,7 @@ else:
     x = '[X]'
 
 
-if platform.system() == 'Windows':
+if os_is_windows:
     ping_arg = "-n"
 else:
     ping_arg = "-c"
