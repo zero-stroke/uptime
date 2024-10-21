@@ -4,17 +4,17 @@ Can be run for days to see how often the internet is up.
 import subprocess
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
 import sys
 import platform
 import os
+from datetime import datetime
 
 sys.stdout.reconfigure(encoding='utf-8')
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
+output_file = f"uptime_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.log"
 win_version = platform.win32_ver()
-# Windows 11 starts from build number 22000
-try:
+try:  # Windows 11 starts from build number 22000
     build_number = int(win_version[1].split('.')[2])
     is_win_11 = build_number >= 22000
 except (IndexError, ValueError):
@@ -23,7 +23,7 @@ except (IndexError, ValueError):
 os_is_windows = platform.system() == 'Windows'
 
 if is_win_11 or not os_is_windows:
-    # print("Windows 11 or Linux detected")
+    # print_and_log()("Windows 11 or Linux detected")
     checkmark = '✅'
     x = '❌'
 else:
@@ -103,8 +103,8 @@ def main() -> None:
     outages: list[Outage] = []
     start_time = 0.0
 
-    print(" " * 5 + "\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * 60 + "\n")
-    print(" " * 22 + "Quad9            Cloudflare       Google")
+    print_and_log(" " * 5 + "\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * 60 + "\n")
+    print_and_log(" " * 22 + "Quad9            Cloudflare       Google")
     script_start = time.time()
 
     try:
@@ -134,7 +134,7 @@ def main() -> None:
                     ping_result_output.append(x.ljust(ljust_num))
 
             if all_failed:
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {x * 7} Internet Outage {x * 7} ")
+                print_and_log(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {x * 7} Internet Outage {x * 7} ")
                 if not outage_start:
                     outage_start = time.time()
             else:
@@ -144,7 +144,7 @@ def main() -> None:
                     outage = Outage(outage_start, outage_end)
                     outages.append(outage)
                     outage_start = 0.0
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
+                print_and_log(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
 
             if all_hosts[0].total_pings % info_print_interval_seconds == 0:  # Every x seconds
                 for host in all_hosts:
@@ -155,15 +155,15 @@ def main() -> None:
                 if outages:
                     print_outage_info(outages)
                 elif outage_start:
-                    print(f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
+                    print_and_log(f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
                 else:
-                    print("\nNo outages")
-                print("\n                      Quad9            Cloudflare       Google")
+                    print_and_log("\nNo outages")
+                print_and_log("\n                      Quad9            Cloudflare       Google")
 
             time.sleep(ping_interval_seconds)
 
     except KeyboardInterrupt:
-        print("\nFinal Uptime and Response Times:", end='')
+        print_and_log("\nFinal Uptime and Response Times:")
         calulate_stats(all_hosts)
         script_end = time.time()
         total_time = script_end - script_start
@@ -171,13 +171,13 @@ def main() -> None:
         if outages:
             print_outage_info(outages)
         else:
-            print("\nNo outages")
-        print(f"\nProgram ran for: {message}\n")
+            print_and_log("\nNo outages")
+        print_and_log(f"\nProgram ran for: {message}\n")
 
 
 def print_outage_info(all_outages: list[Outage]) -> None:
-    print(f"\nTotal outages: {len(all_outages)}")
-    print("Outage Log:")
+    print_and_log(f"\nTotal outages: {len(all_outages)}")
+    print_and_log("Outage Log:")
     column_names = ["Start", "End", "Duration"]
 
     stats: list[list] = []
@@ -190,7 +190,7 @@ def print_outage_info(all_outages: list[Outage]) -> None:
 
 
 def calulate_stats(all_hosts: list[Host]) -> None:
-    print("\n")
+    print_and_log("\n")
     column_names = ["Host", "Uptime", "Average", "Low", "High"]
 
     stats: list[list] = []
@@ -209,12 +209,12 @@ def print_formatted_stats(stats: list[list], column_names: list) -> None:
     col_widths = [max(len(str(item)) for item in col) for col in zip(*stats, column_names)]
 
     # Print header
-    print(" | ".join(header.ljust(width) for header, width in zip(column_names, col_widths)))
-    print("-+-".join('-' * width for width in col_widths))
+    print_and_log(" | ".join(header.ljust(width) for header, width in zip(column_names, col_widths)))
+    print_and_log("-+-".join('-' * width for width in col_widths))
 
     # Print stats
     for stat in stats:
-        print(" | ".join(str(item).ljust(width) for item, width in zip(stat, col_widths)))
+        print_and_log(" | ".join(str(item).ljust(width) for item, width in zip(stat, col_widths)))
 
 
 def format_seconds(seconds_time: float) -> str:
@@ -228,6 +228,13 @@ def format_seconds(seconds_time: float) -> str:
             total_time_message += f" ({total_time_days:.2f} days)"
 
     return total_time_message
+
+
+def print_and_log(output: str) -> None:
+    print(output)
+    with open(output_file, 'a', encoding='utf-8') as file:
+        file.write(output + '\n')
+
 
 
 if __name__ == '__main__':

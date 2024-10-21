@@ -1,3 +1,5 @@
 /dist/**
 /built/**
 /build/**
+**.log
+**.spec
