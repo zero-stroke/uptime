@@ -6,8 +6,33 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 import sys
+import platform
+import os
 
 sys.stdout.reconfigure(encoding='utf-8')
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+
+win_version = platform.win32_ver()
+# Windows 11 starts from build number 22000
+try:
+    build_number = int(win_version[1].split('.')[2])
+    is_win_11 = build_number >= 22000
+except (IndexError, ValueError):
+    is_win_11 = False
+
+if is_win_11:
+    print("Windows 11 detected")
+    checkmark = '✅'
+    x = '❌'
+else:
+    checkmark = '[√]'
+    x = '[X]'
+
+
+if platform.system() == 'Windows':
+    ping_arg = "-n"
+else:
+    ping_arg = "-c"
 
 
 @dataclass(slots=True)
@@ -88,10 +113,10 @@ def main() -> None:
                 start_time = time.time()
                 host.total_pings += 1
                 try:
-                    ping_result = subprocess.run(["ping", "-n", "1", host.address], stdout=subprocess.PIPE,
+                    ping_result = subprocess.run(["ping", ping_arg, "1", host.address], stdout=subprocess.PIPE,
                                                  stderr=subprocess.PIPE, timeout=timeout_limit)
                     end_time = time.time()
-                    response_time = (end_time - start_time) * 1000  # Convert to milliseconds
+                    response_time = (end_time - start_time) * 500  # Convert to milliseconds
                 except subprocess.TimeoutExpired:
                     host.failed_pings += 1
                     ping_result_output.append("⏱️ timeout".ljust(ljust_num + 1))
@@ -101,13 +126,13 @@ def main() -> None:
                     all_failed = False
                     host.success_pings += 1
                     host.update_response_time(response_time)
-                    ping_result_output.append(f"✅ {response_time:.2f} ms".ljust(ljust_num))
+                    ping_result_output.append(f"{checkmark} {response_time:.2f} ms".ljust(ljust_num))
                 else:
                     host.failed_pings += 1
-                    ping_result_output.append("❌".ljust(ljust_num))
+                    ping_result_output.append(x.ljust(ljust_num))
 
             if all_failed:
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌❌❌❌❌❌❌ Internet Outage ❌❌❌❌❌❌❌ ")
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {x * 7} Internet Outage {x * 7} ")
                 if not outage_start:
                     outage_start = time.time()
             else:
@@ -117,7 +142,7 @@ def main() -> None:
                     outage = Outage(outage_start, outage_end)
                     outages.append(outage)
                     outage_start = 0.0
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])  # noqa
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
 
             if all_hosts[0].total_pings % info_print_interval_seconds == 0:  # Every x seconds
                 for host in all_hosts:
