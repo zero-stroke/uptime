@@ -1,7 +1,6 @@
 # uptime.py
 
 A Python script to check internet uptime by pinging DNS servers.
-If you find this tool useful, please consider giving it a ⭐ on GitHub to help others discover it!
 
 
 ## Prerequisites
@@ -112,6 +111,8 @@ Start               | End                 | Duration
 ```
 
 Output should be written to a .log file in the same directory that it was ran from. 
+
+
 Note that if using Windows 10 or below, the emojis are replaced by [✓] and [X].
 
 
@@ -124,7 +125,12 @@ If you encounter issues:
 - For help, create an issue on GitHub
 
 
+If you find this tool useful, consider giving it a ⭐ on GitHub to help others discover it!
+
+
+
 ## License
 This project is licensed under the Apache NON-AI License, Version 2.0 - see the [LICENSE](LICENSE.txt) file for details
+
 
 
