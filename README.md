@@ -5,7 +5,7 @@ A Python script to check internet uptime by pinging DNS servers.
 
 ## Prerequisites
 
-For running with python, follow the below steps. Otherwise, I've also compiled it into an exe that you can point and click to run, so that is an alternative as well, though it might not be as consistent as the .py script. This has been tested to work on windows 10, 11, and Ubuntu. 
+For running with python, follow the below steps. Otherwise, I've also compiled it into an exe that you can point and click to run, though I recommend the .py script as the exe might not be as consistent as the original. This has been tested to work on windows 10, 11, and Ubuntu. 
 
 1. **Python**: Make sure Python is installed on your computer, version 3.10 or up
    - Download from: https://www.python.org/downloads/ make sure to check the box that says to add it to your "PATH".
@@ -15,6 +15,9 @@ python --version
 ``` 
 
 2. **Git** (Optional - Choose one method below):
+
+
+
    - **With Git:**
      - Install Git from: https://git-scm.com/downloads
      - Clone: 
@@ -23,8 +26,7 @@ git clone https://github.com/zero-stroke/uptime.git
 ```
    - **Without Git:**
      - Click the green "Code" button on GitHub
-     - Select "Download ZIP"
-     - Extract the ZIP file
+     - Select "Download ZIP", then extract the downloaded file
 
 ## Running the Script
 
@@ -42,23 +44,11 @@ It logs instances at which all three ping attempts are not successful and tracks
 Output while running should look something like this:
 ```
                       Quad9            Cloudflare       Google
-2024-10-19 14:12:56 - ✅ 53.08 ms      ✅ 51.03 ms      ✅ 49.53 ms
-2024-10-19 14:12:59 - ✅ 54.06 ms      ✅ 48.04 ms      ✅ 61.24 ms
-2024-10-19 14:13:02 - ✅ 51.64 ms      ✅ 49.06 ms      ✅ 47.54 ms
-2024-10-19 14:13:05 - ✅ 52.53 ms      ✅ 48.53 ms      ✅ 50.10 ms
-2024-10-19 14:13:09 - ✅ 52.23 ms      ✅ 49.17 ms      ✅ 46.52 ms
-2024-10-19 14:13:12 - ✅ 51.81 ms      ✅ 48.03 ms      ✅ 48.54 ms
-2024-10-19 14:13:15 - ✅ 51.53 ms      ✅ 48.02 ms      ✅ 49.08 ms
-2024-10-19 14:13:18 - ✅ 52.62 ms      ✅ 48.02 ms      ✅ 48.92 ms
-2024-10-19 14:13:21 - ✅ 52.55 ms      ✅ 48.54 ms      ✅ 47.01 ms
-2024-10-19 14:13:25 - ✅ 264.02 ms     ✅ 62.03 ms      ✅ 70.94 ms
-2024-10-19 14:13:28 - ✅ 52.12 ms      ✅ 48.03 ms      ✅ 48.57 ms
 2024-10-19 14:13:31 - ✅ 52.55 ms      ✅ 66.36 ms      ✅ 52.02 ms
 2024-10-19 14:13:34 - ✅ 52.03 ms      ✅ 48.51 ms      ✅ 47.41 ms
 2024-10-19 14:13:41 - ❌               ✅ 48.56 ms      ✅ 47.54 ms
 2024-10-19 14:13:44 - ✅ 51.51 ms      ✅ 50.07 ms      ✅ 48.00 ms
 2024-10-19 14:13:47 - ✅ 71.09 ms      ✅ 75.09 ms      ✅ 71.58 ms
-2024-10-19 14:13:50 - ✅ 52.67 ms      ✅ 48.10 ms      ✅ 48.03 ms
 
 
 Host    | Uptime  | Average  | Low      | High
@@ -94,8 +84,7 @@ Ongoing outage since 2024-10-19 16:34:05
 2024-10-19 16:34:30 - ✅ 53.58 ms      ✅ 49.60 ms      ✅ 47.72 ms
 2024-10-19 16:34:33 - ✅ 52.66 ms      ✅ 49.94 ms      ✅ 46.73 ms
 2024-10-19 16:34:36 - ✅ 56.55 ms      ✅ 52.60 ms      ✅ 58.75 ms
-2024-10-19 16:34:39 - ✅ 52.66 ms      ✅ 49.94 ms      ✅ 46.73 ms
-2024-10-19 16:34:42 - ✅ 56.55 ms      ✅ 52.60 ms      ✅ 58.75 ms
+
 
 Host    | Uptime | Average  | Low      | High
 --------+--------+----------+----------+---------
@@ -110,7 +99,7 @@ Start               | End                 | Duration
 2024-10-19 16:33:24 | 2024-10-19 16:34:27 | 63.17s (1.05 minutes)
 ```
 
-Output should be written to a .log file in the same directory that it was ran from. 
+As it runs, it also writes the output to a .log file in the same directory that it was ran from. 
 
 
 Note that if using Windows 10 or below, the emojis are replaced by [✓] and [X].
