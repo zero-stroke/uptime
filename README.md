@@ -109,6 +109,16 @@ Start               | End                 | Duration
 2024-10-19 16:33:24 | 2024-10-19 16:34:27 | 63.17s (1.05 minutes)
 ```
 
+You can also add your own hosts to ping by using the `--extra-hosts` or `e` flag when 
+it's ran in the command line, giving each host's address and name. 
+For example, 
+
+```python uptime.py --extra-hosts 8.8.4.4 GoogleDNS 1.0.0.1 "Another Host"```
+
+```python uptime.py -e 8.8.4.4 GoogleDNS```
+
+```uptime.exe -e 8.8.4.4 GoogleDNS 208.67.222.222 "Another Host"```
+
 Note that if using Windows 10 or below, the emojis are replaced by [✓] and [X].
 
 
@@ -123,5 +133,3 @@ If you encounter issues:
 
 ## License
 This project is licensed under the Apache NON-AI License, Version 2.0 - see the [LICENSE](LICENSE.txt) file for details
-
-

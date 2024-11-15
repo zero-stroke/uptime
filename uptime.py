@@ -1,12 +1,15 @@
-"""
+r"""
 Can be run for days to see how often the internet is up.
+
+Compiled into exe with `pyinstaller -F .\uptime.py`
 """
+import argparse
+import os
+import platform
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
-import sys
-import platform
-import os
 from datetime import datetime
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -29,7 +32,6 @@ if is_win_11 or not os_is_windows:
 else:
     checkmark = '[√]'
     x = '[X]'
-
 
 if os_is_windows:
     ping_arg = "-n"
@@ -66,6 +68,7 @@ class Outage:
 @dataclass(slots=True)
 class Host:
     address: str
+    name: str = ''
     success_pings: int = 0
     failed_pings: int = 0
     total_pings: int = 0
@@ -75,6 +78,10 @@ class Host:
     low_response_time: float = float('inf')
     uptime_percentage: float = 0
     avg_response_time: float = 0
+
+    def __post_init__(self):
+        if not self.name:
+            name = self.address
 
     def update_response_time(self, time_: float):
         self.response_times.append(time_)
@@ -91,8 +98,31 @@ class Host:
 
 
 def main() -> None:
-    all_host_ips = ["9.9.9.9", "1.1.1.1", "8.8.8.8"]  # Quad9, Cloudflare, Google DNS servers (could do 208.67.222.222)
-    all_hosts: list[Host] = [Host(address=host_ip) for host_ip in all_host_ips]
+    host_quad9 = Host(address='9.9.9.9', name='Quad9')
+    host_cloudflare = Host(address='1.1.1.1', name='Cloudflare')
+    host_google = Host(address='8.8.8.8', name='Google')
+    all_hosts: list[Host] = [host_quad9, host_cloudflare, host_google]
+
+    parser = argparse.ArgumentParser(description="Add extra hosts.")
+    parser.add_argument(
+        '-e', '--extra-hosts',
+        nargs='*',
+        metavar=('ADDRESS', 'NAME'),
+        help="Add extra hosts in the form of address and name pairs. Example: --extra-hosts 8.8.4.4 GoogleDNS"
+    )
+
+    args = parser.parse_args()
+
+    if args.extra_hosts:
+        extra_hosts = args.extra_hosts
+        for i in range(0, len(extra_hosts), 2):
+            try:
+                address = extra_hosts[i]
+                name = extra_hosts[i + 1]
+                all_hosts.append(Host(address=address, name=name))
+            except IndexError:
+                print("Error: Each extra host requires an address and a name.")
+                return
 
     ping_interval_seconds = 3
     info_print_interval_seconds = 40
@@ -103,8 +133,9 @@ def main() -> None:
     outages: list[Outage] = []
     start_time = 0.0
 
-    print_and_log(" " * 5 + "\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * 60 + "\n")
-    print_and_log(" " * 22 + "Quad9            Cloudflare       Google")
+    formatted_names = " " * 22 + ''.join([host.name.ljust(17) for host in all_hosts])
+    print_and_log("\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * len(formatted_names) + "\n")
+    print_and_log(formatted_names)
     script_start = time.time()
 
     try:
@@ -144,7 +175,8 @@ def main() -> None:
                     outage = Outage(outage_start, outage_end)
                     outages.append(outage)
                     outage_start = 0.0
-                print_and_log(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
+                print_and_log(
+                    f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
 
             if all_hosts[0].total_pings % info_print_interval_seconds == 0:  # Every x seconds
                 for host in all_hosts:
@@ -155,10 +187,11 @@ def main() -> None:
                 if outages:
                     print_outage_info(outages)
                 elif outage_start:
-                    print_and_log(f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
+                    print_and_log(
+                        f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
                 else:
                     print_and_log("\nNo outages")
-                print_and_log("\n                      Quad9            Cloudflare       Google")
+                print_and_log("\n" + formatted_names)
 
             time.sleep(ping_interval_seconds)
 
@@ -234,7 +267,6 @@ def print_and_log(output: str) -> None:
     print(output)
     with open(output_file, 'a', encoding='utf-8') as file:
         file.write(output + '\n')
-
 
 
 if __name__ == '__main__':
