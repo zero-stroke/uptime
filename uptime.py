@@ -128,7 +128,7 @@ def main() -> None:
     info_print_interval_seconds = 40
     ljust_num = 12
     num_outages = 0
-    timeout_limit = 4.8
+    timeout_limit = 7
     outage_start = 0.0
     outages: list[Outage] = []
     start_time = 0.0
