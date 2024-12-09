@@ -1,6 +1,6 @@
 # uptime.py
 
-A Python script to check internet uptime by pinging DNS servers.
+A Python script that lets you monitor internet uptime by pinging DNS servers. It pings Cloudflare (1.1.1.1), Google (8.8.8.8), and Quad9 (9.9.9.9).
 
 
 ## Prerequisites
