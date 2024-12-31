@@ -3,7 +3,6 @@
 A Python script that lets you monitor internet uptime by pinging DNS servers. It pings Cloudflare (1.1.1.1), Google (8.8.8.8), and Quad9 (9.9.9.9).
 
 If you find this tool useful, consider giving it a ⭐ on GitHub to help others discover it!
-
 ## Prerequisites
 
 For running with python, follow the below steps. If you don't want to use python, I've also compiled it into an .exe that you can point and click to run, but I recommend python for optimal stability. 
