@@ -3,10 +3,10 @@ Can be run for days to see how often the internet is up.
 
 Compiled into exe with `pyinstaller -F .\uptime.py`
 """
-import icmplib
 import argparse
 import os
 import platform
+import socket
 import sys
 import time
 from dataclasses import dataclass, field
@@ -123,7 +123,7 @@ def main() -> None:
     info_print_interval_seconds = 40
     ljust_num = 15
     num_outages = 0
-    timeout_limit = 7
+    timeout_limit = 1
     outage_start = 0.0
     outages: list[Outage] = []
     start_time = 0.0
@@ -140,17 +140,17 @@ def main() -> None:
             for host in all_hosts:
                 start_time = time.time()
                 host.total_pings += 1
-
-                ping_result = icmplib.ping(address=host.address, count=1)
+                live = False
+                dns_port = 80
+                try:
+                    with socket.create_connection((host.address, dns_port), timeout_limit):
+                        live = True
+                except (ConnectionAbortedError, TimeoutError):
+                    pass
                 end_time = time.time()
                 response_time = (end_time - start_time) * 1000  # Convert to milliseconds
 
-                if response_time > timeout_limit * 1000:
-                    host.failed_pings += 1
-                    ping_result_output.append("⏳ Timeout".ljust(ljust_num))
-                    continue
-
-                if ping_result.is_alive:
+                if live:
                     all_failed = False
                     host.success_pings += 1
                     host.update_response_time(response_time)
