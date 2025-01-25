@@ -3,10 +3,10 @@ Can be run for days to see how often the internet is up.
 
 Compiled into exe with `pyinstaller -F .\uptime.py`
 """
+import icmplib
 import argparse
 import os
 import platform
-import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
@@ -32,11 +32,6 @@ if is_win_11 or not os_is_windows:
 else:
     checkmark = '[√]'
     x = '[X]'
-
-if os_is_windows:
-    ping_arg = "-n"
-else:
-    ping_arg = "-c"
 
 
 @dataclass(slots=True)
@@ -81,7 +76,7 @@ class Host:
 
     def __post_init__(self):
         if not self.name:
-            name = self.address
+            self.name = self.address
 
     def update_response_time(self, time_: float):
         self.response_times.append(time_)
@@ -126,14 +121,14 @@ def main() -> None:
 
     ping_interval_seconds = 3
     info_print_interval_seconds = 40
-    ljust_num = 12
+    ljust_num = 15
     num_outages = 0
     timeout_limit = 7
     outage_start = 0.0
     outages: list[Outage] = []
     start_time = 0.0
 
-    formatted_names = " " * 22 + ''.join([host.name.ljust(17) for host in all_hosts])
+    formatted_names = " " * 22 + ''.join([host.name.ljust(ljust_num + 1) for host in all_hosts])
     print_and_log("\nMonitoring internet uptime by pinging DNS servers:\n" + "-" * len(formatted_names) + "\n")
     print_and_log(formatted_names)
     script_start = time.time()
@@ -145,17 +140,17 @@ def main() -> None:
             for host in all_hosts:
                 start_time = time.time()
                 host.total_pings += 1
-                try:
-                    ping_result = subprocess.run(["ping", ping_arg, "1", host.address], stdout=subprocess.PIPE,
-                                                 stderr=subprocess.PIPE, timeout=timeout_limit)
-                    end_time = time.time()
-                    response_time = (end_time - start_time) * 500  # Convert to milliseconds
-                except subprocess.TimeoutExpired:
+
+                ping_result = icmplib.ping(address=host.address, count=1)
+                end_time = time.time()
+                response_time = (end_time - start_time) * 1000  # Convert to milliseconds
+
+                if response_time > timeout_limit * 1000:
                     host.failed_pings += 1
-                    ping_result_output.append("⏱️ timeout".ljust(ljust_num + 1))
+                    ping_result_output.append("⏳ Timeout".ljust(ljust_num))
                     continue
 
-                if ping_result.returncode == 0:
+                if ping_result.is_alive:
                     all_failed = False
                     host.success_pings += 1
                     host.update_response_time(response_time)
@@ -175,20 +170,21 @@ def main() -> None:
                     outage = Outage(outage_start, outage_end)
                     outages.append(outage)
                     outage_start = 0.0
-                print_and_log(
-                    f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {'    '.join(ping_result_output)}"[:-2])
+                print_and_log(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {''.join(ping_result_output)}"[:-2])
 
             if all_hosts[0].total_pings % info_print_interval_seconds == 0:  # Every x seconds
                 for host in all_hosts:
                     host.uptime_percentage = host.success_pings / host.total_pings * 100
-                    host.avg_response_time = host.total_response_time / len(host.response_times)
+                    if len(host.response_times) > 0:
+                        host.avg_response_time = host.total_response_time / len(host.response_times)
+                    else:
+                        host.avg_response_time = 0
 
                 calulate_stats(all_hosts)
                 if outages:
                     print_outage_info(outages)
                 elif outage_start:
-                    print_and_log(
-                        f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
+                    print_and_log(f"\nOngoing outage since {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}")
                 else:
                     print_and_log("\nNo outages")
                 print_and_log("\n" + formatted_names)
