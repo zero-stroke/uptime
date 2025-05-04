@@ -149,7 +149,7 @@ def main() -> None:
                     ping_result = subprocess.run(["ping", ping_arg, "1", host.address], stdout=subprocess.PIPE,
                                                  stderr=subprocess.PIPE, timeout=timeout_limit)
                     end_time = time.time()
-                    response_time = (end_time - start_time) * 500  # Convert to milliseconds
+                    response_time = (end_time - start_time) * 1000  # Convert to milliseconds
                 except subprocess.TimeoutExpired:
                     host.failed_pings += 1
                     ping_result_output.append("⏱️ timeout".ljust(ljust_num + 1))
