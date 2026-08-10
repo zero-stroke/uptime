@@ -1,3 +1,5 @@
+
+
 # uptime.py
 
 A Python script that lets you monitor internet uptime by pinging DNS servers. It pings Cloudflare (1.1.1.1), Google (8.8.8.8), and Quad9 (9.9.9.9).
@@ -107,11 +109,17 @@ You can also add your own hosts to ping by using the `--extra-hosts` or `e` flag
 it's ran in the command line, giving each host's address and name. 
 For example, 
 
-```python uptime.py --extra-hosts 8.8.4.4 GoogleDNS 1.0.0.1 "Another Host"```
+```shell
+python uptime.py --extra-hosts 8.8.4.4 GoogleDNS 1.0.0.1 "Another Host"
+```
 
-```python uptime.py -e 8.8.4.4 GoogleDNS```
+```shell
+python uptime.py -e 8.8.4.4 GoogleDNS
+```
 
-```uptime.exe -e 8.8.4.4 GoogleDNS 208.67.222.222 "Another Host"```
+```shell
+uptime.exe -e 8.8.4.4 GoogleDNS 208.67.222.222 "Another Host"
+```
 
 
 Note that if using Windows 10 or below, the emojis are replaced by [✓] and [X].
